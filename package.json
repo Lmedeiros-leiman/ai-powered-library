@@ -4,9 +4,13 @@
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "chokidar": "^5.0.0",
+    "grpc-tools": "^1.13.1",
+    "ts-proto": "^2.11.6"
   },
   "peerDependencies": {
     "typescript": "^5"
-  }
+  },
+  "dependencies": {}
 }
