@@ -94,7 +94,7 @@ async function rebuild() {
 
   if (shouldRunServer) {
     await run("server", "dotnet", ["build"], SERVER_DIR).catch(() => {
-      throw new Error("Falha no build do C# — veja output acima");
+      throw new Error("Falha no build do C# - veja output acima");
     });
   }
 
@@ -141,7 +141,7 @@ if (!watchMode) {
   async function triggerRebuild() {
     if (isRunning) {
       pendingRebuild = true;
-      console.log("\n[watch] Change detected mid-build — will rebuild again after.");
+      console.log("\n[watch] Change detected mid-build - will rebuild again after.");
       return;
     }
 

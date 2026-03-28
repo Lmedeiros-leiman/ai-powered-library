@@ -6,17 +6,41 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
+      - ./ollama-entrypoint.sh:/entrypoint.sh
+    entrypoint: [ "/bin/sh", "/entrypoint.sh" ]
     environment:
-      - CUDA_VISIBLE_DEVICES=        # força CPU pq minha placa de vídeo é fraca.
-    entrypoint: ["/bin/sh", "-c", "ollama serve & skeep 3 && ollama pull qwen3.5:0.8b && wait"] # Chama o qwen3.5 de 0.8b. 
+      - CUDA_VISIBLE_DEVICES= # Remover isso para usar GPU. Só botei pq tenho GPU fraca.
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3:4b}
     restart: unless-stopped
 
-  main-server:
-    build: ./main-server
-    depends_on:
-      - ollama
+  server:
+    build: ./Server
+    container_name: server
+    ports:
+      - "8080:8080"
     environment:
       - OLLAMA_URL=http://ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3:4b}
+    depends_on:
+      - ollama
+    volumes:
+      - ./Server:/app/src
+    command: dotnet watch run --urls http://0.0.0.0:8080 # sobrescreve só em dev
+    restart: unless-stopped
+
+  web-client:
+    build: ./web-client
+    container_name: web-client
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web-client:/app # bind mount - edita local, Vite recarrega
+      - /app/node_modules # preserva node_modules do container
+    environment:
+      - VITE_SERVER_URL=http://localhost:8080
+    depends_on:
+      - server
+    restart: unless-stopped
 
 volumes:
-  ollama_data:    # persiste os modelos baixados
+  ollama_data:
