@@ -1,31 +1,42 @@
+version: "3.9"
+
 services:
   ollama:
-    image: ollama/ollama
+    image: docker.io/ollama/ollama:latest
     container_name: ollama
     ports:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
-      - ./ollama-entrypoint.sh:/entrypoint.sh
-    entrypoint: [ "/bin/sh", "/entrypoint.sh" ]
+      - ./ollama-entrypoint.sh:/app/ollama-entrypoint.sh:Z
     environment:
-      - CUDA_VISIBLE_DEVICES= # Remover isso para usar GPU. Só botei pq tenho GPU fraca.
-      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3:4b}
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
+      - CUDA_VISIBLE_DEVICES=
+    entrypoint: ["/bin/sh", "/app/ollama-entrypoint.sh"]
     restart: unless-stopped
 
   server:
-    build: ./Server
+    build:
+      context: .
+      dockerfile: Server/Dockerfile
     container_name: server
     ports:
       - "8080:8080"
     environment:
       - OLLAMA_URL=http://ollama:11434
-      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3:4b}
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
     depends_on:
       - ollama
     volumes:
       - ./Server:/app/src
-    command: dotnet watch run --urls http://0.0.0.0:8080 # sobrescreve só em dev
+    command: >
+      sh -c "
+      until curl -s http://ollama:11434 > /dev/null; do
+        echo 'Waiting for Ollama...';
+        sleep 1;
+      done;
+      dotnet watch run --urls http://0.0.0.0:8080
+      "
     restart: unless-stopped
 
   web-client:
@@ -34,8 +45,8 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - ./web-client:/app # bind mount - edita local, Vite recarrega
-      - /app/node_modules # preserva node_modules do container
+      - ./web-client:/app:Z
+      - /app/node_modules
     environment:
       - VITE_SERVER_URL=http://localhost:8080
     depends_on:
@@ -44,3 +55,4 @@ services:
 
 volumes:
   ollama_data:
+  
