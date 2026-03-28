@@ -41,7 +41,7 @@ const watchMode = flags.watch;
 const ROOT = path.resolve(import.meta.dir, "..");
 
 const PROTO_DIR = path.join(ROOT, "Protos");
-const WEB_OUT_DIR = path.join(ROOT, "client-web", "src", "proto");
+const WEB_OUT_DIR = path.join(ROOT, "web-client", "src", "proto");
 const SERVER_DIR = path.join(ROOT, "server");
 
 const DEBOUNCE_MS = 300;
