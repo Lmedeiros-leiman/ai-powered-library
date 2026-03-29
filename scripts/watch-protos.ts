@@ -93,9 +93,12 @@ async function rebuild() {
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 
   if (shouldRunServer) {
-    await run("server", "dotnet", ["build"], SERVER_DIR).catch(() => {
-      throw new Error("Falha no build do C# - veja output acima");
-    });
+    try {
+      await run("server", "dotnet", ["build"], SERVER_DIR);
+    } catch (err) {
+      console.error("❌ C# build failed:\n", err);
+      throw err;
+    }
   }
 
   if (shouldRunWeb) {
@@ -131,7 +134,7 @@ if (!watchMode) {
     process.exit(1);
   });
 
-// ─── Watch mode ───────────────────────────────────────────────────────────────
+  // ─── Watch mode ───────────────────────────────────────────────────────────────
 
 } else {
   let debounceTimer: ReturnType<typeof setTimeout> | undefined;
