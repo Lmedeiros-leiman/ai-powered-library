@@ -4,12 +4,16 @@
   "type": "module",
   "private": true,
   "scripts": {
-  "dev": "concurrently \"podman-compose up\" \"bun run proto:watch\"",
-  "dev:build": "podman-compose up --build",
-  "proto:build": "bun scripts/watch-protos.ts",
-  "proto:watch": "bun scripts/watch-protos.ts --watch --web",
-  "proto:server": "bun scripts/watch-protos.ts --server",
-  "proto:web": "bun scripts/watch-protos.ts --web"
+    "dev": "concurrently \"podman-compose up\" \"bun run proto:watch\"",
+    "dev:build": "podman-compose up --build",
+
+    "prod": "podman-compose -f docker-compose.prod.yml up",
+    "prod:build": "podman-compose -f docker-compose.prod.yml up --build",
+
+    "proto:build": "bun scripts/watch-protos.ts --web",
+    "proto:watch": "bun scripts/watch-protos.ts --watch --web",
+    "proto:server": "bun scripts/watch-protos.ts --server",
+    "proto:web": "bun scripts/watch-protos.ts --web"
   },
   "devDependencies": {
     "@types/bun": "latest",

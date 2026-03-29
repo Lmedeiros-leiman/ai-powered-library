@@ -8,11 +8,8 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
-      - ./ollama-entrypoint.sh:/app/ollama-entrypoint.sh:Z
     environment:
       - OLLAMA_MODEL=${OLLAMA_MODEL}
-      - CUDA_VISIBLE_DEVICES=
-    entrypoint: ["/bin/sh", "/app/ollama-entrypoint.sh"]
     restart: unless-stopped
 
   server:
@@ -23,20 +20,11 @@ services:
     ports:
       - "8080:8080"
     environment:
+      - ASPNETCORE_ENVIRONMENT=Production
       - OLLAMA_URL=http://ollama:11434
       - OLLAMA_MODEL=${OLLAMA_MODEL}
     depends_on:
       - ollama
-    volumes:
-      - ./Server:/app/src
-    command: >
-      sh -c "
-      until curl -s http://ollama:11434 > /dev/null; do
-        echo 'Waiting for Ollama...';
-        sleep 1;
-      done;
-      dotnet watch run --urls http://0.0.0.0:8080
-      "
     restart: unless-stopped
 
   web-client:
@@ -44,15 +32,9 @@ services:
     container_name: web-client
     ports:
       - "5173:5173"
-    volumes:
-      - ./web-client:/app:Z
-      - /app/node_modules
-    environment:
-      - VITE_SERVER_URL=http://localhost:8080
     depends_on:
       - server
     restart: unless-stopped
 
 volumes:
   ollama_data:
-  
