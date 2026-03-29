@@ -1,4 +1,4 @@
-using GrpcGreeter.Services;
+using Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +17,7 @@ builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
 var app = builder.Build();
 
 app.UseGrpcWeb();
-app.UseCors();
+app.UseCors("AllowAll");
 
 app.MapGrpcService<GreeterService>().EnableGrpcWeb()
                                     .RequireCors("AllowAll");
