@@ -15,6 +15,13 @@ web-client -> http://localhost:5173
 server gRPC -> http://localhost:8080
 Ollama -> http://localhost:11434
 
+
+
+
+
+
+
+
 ```bash
 bun install
 ```

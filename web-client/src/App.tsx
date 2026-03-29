@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { ConnectError, createClient } from "@connectrpc/connect";
-import { createConnectTransport } from "@connectrpc/connect-web";
+import { createGrpcWebTransport } from "@connectrpc/connect-web";
 import { Greeter } from "./proto/greet_pb";
 
-const transport = createConnectTransport({
-  baseUrl: "http://localhost:5000",
+const transport = createGrpcWebTransport({
+  baseUrl: "http://localhost:8080",
 });
 
 const client = createClient(Greeter, transport);

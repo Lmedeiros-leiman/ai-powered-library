@@ -1,11 +1,8 @@
 version: "3.9"
-
 services:
   ollama:
     image: docker.io/ollama/ollama:latest
     container_name: ollama
-    ports:
-      - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
     environment:
@@ -17,8 +14,6 @@ services:
       context: .
       dockerfile: Server/Dockerfile
     container_name: server
-    ports:
-      - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - OLLAMA_URL=http://ollama:11434
@@ -31,7 +26,7 @@ services:
     build: ./web-client
     container_name: web-client
     ports:
-      - "5173:5173"
+      - "8080:80"
     depends_on:
       - server
     restart: unless-stopped

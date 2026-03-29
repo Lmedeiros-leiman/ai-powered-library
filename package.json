@@ -13,7 +13,10 @@
   },
   "private": true,
   "scripts": {
-    "dev": "concurrently \"podman-compose up --build\" \"bun run proto:watch\"",
+    "dev": "concurrently \"podman-compose up \" \"bun run proto:watch\"",
+
+
+
     "dev:build": "podman-compose up --build",
     "prod": "podman-compose -f docker-compose.prod.yml up",
     "prod:build": "podman-compose -f docker-compose.prod.yml up --build",
