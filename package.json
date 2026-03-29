@@ -1,29 +1,26 @@
 {
   "name": "ai-powered-library",
   "module": "index.ts",
-  "type": "module",
+  "devDependencies": {
+    "@bufbuild/buf": "^1.66.1",
+    "@bufbuild/protoc-gen-es": "^2.11.0",
+    "@types/bun": "latest",
+    "chokidar": "^5.0.0",
+    "concurrently": "^9.2.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
   "private": true,
   "scripts": {
-    "dev": "concurrently \"podman-compose up\" \"bun run proto:watch\"",
+    "dev": "concurrently \"podman-compose up --build\" \"bun run proto:watch\"",
     "dev:build": "podman-compose up --build",
-
     "prod": "podman-compose -f docker-compose.prod.yml up",
     "prod:build": "podman-compose -f docker-compose.prod.yml up --build",
-
     "proto:build": "bun scripts/watch-protos.ts --web",
     "proto:watch": "bun scripts/watch-protos.ts --watch --web",
     "proto:server": "bun scripts/watch-protos.ts --server",
     "proto:web": "bun scripts/watch-protos.ts --web"
   },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "chokidar": "^5.0.0",
-    "concurrently": "^9.2.1",
-    "grpc-tools": "^1.13.1",
-    "ts-proto": "^2.11.6"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {}
+  "type": "module"
 }

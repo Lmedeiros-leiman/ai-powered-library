@@ -49,7 +49,13 @@ const DEBOUNCE_MS = 300;
 const isWindows = process.platform === "win32";
 const pluginExt = isWindows ? ".exe" : "";
 const PROTOC = path.join(ROOT, "node_modules", ".bin", `grpc_tools_node_protoc${pluginExt}`);
-const PROTOC_PLUGIN = path.join(ROOT, "node_modules", ".bin", `protoc-gen-ts_proto${pluginExt}`);
+const CONNECT_PLUGIN = path.join(
+  ROOT,
+  "node_modules",
+  ".bin",
+  `protoc-gen-connect-es${pluginExt}`
+);
+
 
 // ─── Runner ───────────────────────────────────────────────────────────────────
 
@@ -112,16 +118,8 @@ async function rebuild() {
     } else {
       fs.mkdirSync(WEB_OUT_DIR, { recursive: true });
 
-      await run("web/proto", PROTOC, [
-        `--plugin=protoc-gen-ts_proto=${PROTOC_PLUGIN}`,
-        `--ts_proto_out=${WEB_OUT_DIR}`,
-        "--ts_proto_opt=esModuleInterop=true",
-        "--ts_proto_opt=outputServices=generic-definitions",
-        "--ts_proto_opt=useOptionals=messages",
-        "--ts_proto_opt=stringEnums=true",
-        `--proto_path=${PROTO_DIR}`,
-        ...protoFiles,
-      ]);
+      await run("web/proto", "buf", ["generate"]);
+
     }
   }
 }
