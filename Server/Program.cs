@@ -1,13 +1,14 @@
 using Server.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddGrpc();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 app.UseGrpcWeb();
 
 app.MapGrpcService<GreeterService>().EnableGrpcWeb();
-app.MapGet("/", () => "gRPC server");
+
+app.MapGet("/", () => "gRPC server. Use a gRPC client to communicate with this server.");
 
 app.Run();
